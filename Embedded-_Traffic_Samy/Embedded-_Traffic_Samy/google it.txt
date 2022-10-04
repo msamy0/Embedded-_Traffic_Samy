@@ -1,0 +1,8 @@
+showing erro message while compiling
+https://www.avrfreaks.net/forum/how-display-error-message
+https://www.edaboard.com/threads/generating-compile-time-error-in-c.381621/
+https://www.avrfreaks.net/forum/warning-directive
+
+
+using external interrupts in atmege 32
+https://www.electronicwings.com/avr-atmega/atmega1632-external-hardware-interrupts

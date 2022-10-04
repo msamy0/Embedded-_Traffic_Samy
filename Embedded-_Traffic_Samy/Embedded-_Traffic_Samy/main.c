@@ -1,14 +1,15 @@
 /*
- * Embedded-_Traffic_Samy.c
+ * Embedded_Traffic_Samy
  *
- * Created: 03/10/2022 05:16:35 م
- * Author : mohsa
+ * Author : Mohamed Samy
+ * Date : OCT 2022
+ 
  */ 
 
-#include <avr/io.h>
 
 
-int main(void)
+
+int main1(void)
 {
     /* Replace with your application code */
     while (1) 
