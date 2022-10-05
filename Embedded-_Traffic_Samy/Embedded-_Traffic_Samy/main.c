@@ -9,11 +9,12 @@
 
 
 
-int main1(void)
+int main(void)
 {
     /* Replace with your application code */
     while (1) 
     {
     }
+return 0;
 }
 

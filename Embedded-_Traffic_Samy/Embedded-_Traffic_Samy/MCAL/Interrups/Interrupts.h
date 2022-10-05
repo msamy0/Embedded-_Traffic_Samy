@@ -2,6 +2,7 @@
 #define INTERRUPTS_H_
 
 #include "../../Utilities/typedefs.h"
+#include <avr/io.h>
 #include <avr/interrupt.h>
 
 /* initialize global interrupt setting  sei()*/

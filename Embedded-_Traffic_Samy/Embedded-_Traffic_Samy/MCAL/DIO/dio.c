@@ -243,11 +243,11 @@ void DIO_toggle(uint8_t pin_num, EN_port_name port_name)
 
 	if (temp_value == OFF_value)
 	{
-		DIO_write(pin_num, port_name, OFF_value);
+		DIO_write(pin_num, port_name, ON_value);
 	}
 	else if (temp_value == ON_value)
 	{
-		DIO_write(pin_num, port_name, ON_value);
+		DIO_write(pin_num, port_name, OFF_value);
 	}
 	else
 	{

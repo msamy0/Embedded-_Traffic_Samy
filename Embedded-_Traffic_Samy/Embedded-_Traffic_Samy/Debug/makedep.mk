@@ -18,3 +18,5 @@ MCAL\Timers\Timers.c
 
 Testing Modules\External Interrupt Testing Module.c
 
+Testing Modules\Timer Testing Module.c
+
