@@ -5,7 +5,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <math.h>
-#define FCPU 8000000
+#define FCPU 1000000
 
 
 

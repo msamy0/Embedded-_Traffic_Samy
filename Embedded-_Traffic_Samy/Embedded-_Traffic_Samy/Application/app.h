@@ -28,7 +28,7 @@
 
 /* define intervals used in application*/
 #define TRAFFIC_INTERVAL 5000
-#define Y_B_INTERVAL 50 //Yellow blink interval
+#define Y_B_INTERVAL 500 //Yellow blink interval
 
 /*
 * traffic_status_mask illustrated (C>car	P>person	R>red

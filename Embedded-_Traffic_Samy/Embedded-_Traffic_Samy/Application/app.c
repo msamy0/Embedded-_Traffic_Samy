@@ -26,8 +26,8 @@ void app_init() {
 	external_interrupt_init(BUTTON_INTERRUPT_NUM);
 
 	/*timer initialization*/
-	timer_init(timer_0,interrupt_disable,automatic,TRAFFIC_INTERVAL,millis);
-	timer_init(timer_2,interrupt_enable,pre_1,Y_B_INTERVAL,millis);
+	timer_init(timer_0,interrupt_disable,pre_1024,TRAFFIC_INTERVAL,millis);
+	timer_init(timer_2,interrupt_enable,pre_1024,Y_B_INTERVAL,millis);
 	
 	/*init all variables status*/
 	traffic_status_mask = MODE_1_MASK;
@@ -51,9 +51,9 @@ void app_start()
 
 void turn_off_all_leds() // function to turn off every thing
 {
-DIO_write_port(LEDs_PORT,OFF_value);
 LED_blink_stop(CAR_YELLOW_LED_PIN,LEDs_PORT);
 LED_blink_stop(PERSON_YELLOW_LED_PIN,LEDs_PORT);
+DIO_write_port(LEDs_PORT,OFF_value);
 }
 
 void traffic_mode_1_CR_PG()
