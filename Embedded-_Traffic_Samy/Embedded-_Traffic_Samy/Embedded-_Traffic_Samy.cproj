@@ -106,7 +106,6 @@
   <avrgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
-      <Value>F_CPU=8000000</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.directories.IncludePaths>
@@ -177,18 +176,12 @@
     <Compile Include="MCAL\Timers\Timers.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Testing Modules\External Interrupt Testing Module.c">
+    <None Include="Testing Modules\External Interrupt Testing Module.c">
       <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Testing Modules\Timer Testing Module.c">
+    </None>
+    <None Include="Testing Modules\Timer Testing Module.c">
       <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Utilities\Project_Libs.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Utilities\registers.h">
-      <SubType>compile</SubType>
-    </Compile>
+    </None>
     <Compile Include="Utilities\typedefs.h">
       <SubType>compile</SubType>
     </Compile>

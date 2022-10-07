@@ -12,12 +12,12 @@ void DIO_init(uint8_t pin_num, EN_port_name port_name, EN_pin_direction directio
 		case A:
 			if (direction == OUT_pin)
 			{
-				DDRA_REG |= (1 << pin_num);
+				DDRA |= (1 << pin_num);
 				break;
 			}
 			else if (direction == IN_pin)
 			{
-				DDRA_REG &=~ (1 << pin_num);
+				DDRA &=~ (1 << pin_num);
 				break;
 			}
 			else
@@ -29,12 +29,12 @@ void DIO_init(uint8_t pin_num, EN_port_name port_name, EN_pin_direction directio
 		case B:
 			if (direction == OUT_pin)
 			{
-				DDRB_REG |= (1 << pin_num);
+				DDRB |= (1 << pin_num);
 				break;
 			}
 			else if (direction == IN_pin)
 			{
-				DDRB_REG &= ~(1 << pin_num);
+				DDRB &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -45,12 +45,12 @@ void DIO_init(uint8_t pin_num, EN_port_name port_name, EN_pin_direction directio
 		case C:
 			if (direction == OUT_pin)
 			{
-				DDRC_REG |= (1 << pin_num);
+				DDRC |= (1 << pin_num);
 				break;
 			}
 			else if (direction == IN_pin)
 			{
-				DDRC_REG &= ~(1 << pin_num);
+				DDRC &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -62,12 +62,12 @@ void DIO_init(uint8_t pin_num, EN_port_name port_name, EN_pin_direction directio
 		case D:
 			if (direction == OUT_pin)
 			{
-				DDRD_REG |= (1 << pin_num);
+				DDRD |= (1 << pin_num);
 				break;
 			}
 			else if (direction == IN_pin)
 			{
-				DDRD_REG &= ~(1 << pin_num);
+				DDRD &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -87,12 +87,12 @@ void DIO_write(uint8_t pin_num, EN_port_name port_name, EN_pin_value value)
 		case A:
 			if (value == ON_value)
 			{
-				PORTA_REG |= (1 << pin_num);
+				PORTA |= (1 << pin_num);
 				break;
 			}
 			else if (value == OFF_value)
 			{
-				PORTA_REG &= ~(1 << pin_num);
+				PORTA &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -104,12 +104,12 @@ void DIO_write(uint8_t pin_num, EN_port_name port_name, EN_pin_value value)
 		case B:
 			if (value == ON_value)
 			{
-				PORTB_REG |= (1 << pin_num);
+				PORTB |= (1 << pin_num);
 				break;
 			}
 			else if (value == OFF_value)
 			{
-				PORTB_REG &= ~(1 << pin_num);
+				PORTB &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -121,12 +121,12 @@ void DIO_write(uint8_t pin_num, EN_port_name port_name, EN_pin_value value)
 		case C:
 			if (value == ON_value)
 			{
-				PORTC_REG |= (1 << pin_num);
+				PORTC |= (1 << pin_num);
 				break;
 			}
 			else if (value == OFF_value)
 			{
-				PORTC_REG &= ~(1 << pin_num);
+				PORTC &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -138,12 +138,12 @@ void DIO_write(uint8_t pin_num, EN_port_name port_name, EN_pin_value value)
 		case D:
 			if (value == ON_value)
 			{
-				PORTD_REG |= (1 << pin_num);
+				PORTD |= (1 << pin_num);
 				break;
 			}
 			else if (value == OFF_value)
 			{
-				PORTD_REG &= ~(1 << pin_num);
+				PORTD &= ~(1 << pin_num);
 				break;
 			}
 			else
@@ -154,18 +154,66 @@ void DIO_write(uint8_t pin_num, EN_port_name port_name, EN_pin_value value)
 	}
 }
 
+void DIO_write_port(EN_port_name port_name, EN_pin_value value)
+{
+	switch (port_name)
+	{
+		case A:
+			if (value == ON_value)
+			{
+				PORTA = 0xff;
+			}
+			else if (value == OFF_value)
+			{
+				PORTA = 0x00;
+			}
+			break;
+		case B:
+			if (value == ON_value)
+			{
+				PORTA = 0xff;
+			}
+			else if (value == OFF_value)
+			{
+				PORTA = 0x00;
+			}
+			break;
+		case C:
+			if (value == ON_value)
+			{
+				PORTA = 0xff;
+			}
+			else if (value == OFF_value)
+			{
+				PORTA = 0x00;
+			}
+			break;
+		case D:
+			if (value == ON_value)
+			{
+				PORTA = 0xff;
+			}
+			else if (value == OFF_value)
+			{
+				PORTA = 0x00;
+			}
+			break;
+	}
+	
+}
+
 void DIO_read(uint8_t pin_num, EN_port_name port_name, EN_pin_value* value)
 {
 	switch (port_name)
 	{
 		case A:
-			if (((PINA_REG & (1 << pin_num)) >> pin_num))
+			if (((PINA & (1 << pin_num)) >> pin_num))
 			{
 				*value = ON_value;
 				break;
 			}
 
-			else if (!((PINA_REG & (1 << pin_num)) >> pin_num))
+			else if (!((PINA & (1 << pin_num)) >> pin_num))
 			{
 				*value = OFF_value;
 				break;
@@ -178,13 +226,13 @@ void DIO_read(uint8_t pin_num, EN_port_name port_name, EN_pin_value* value)
 			}
 
 		case B:
-			if (((PINB_REG & (1 << pin_num)) >> pin_num))
+			if (((PINB & (1 << pin_num)) >> pin_num))
 			{
 				*value = ON_value;
 				break;
 			}
 
-			else if (!((PINB_REG & (1 << pin_num)) >> pin_num))
+			else if (!((PINB & (1 << pin_num)) >> pin_num))
 			{
 				*value = OFF_value;
 				break;
@@ -196,13 +244,13 @@ void DIO_read(uint8_t pin_num, EN_port_name port_name, EN_pin_value* value)
 				break;
 			}
 		case C:
-			if (((PINC_REG & (1 << pin_num)) >> pin_num))
+			if (((PINC & (1 << pin_num)) >> pin_num))
 			{
 				*value = ON_value;
 				break;
 			}
 
-			else if (!((PINC_REG & (1 << pin_num)) >> pin_num))
+			else if (!((PINC & (1 << pin_num)) >> pin_num))
 			{
 				*value = OFF_value;
 				break;
@@ -214,13 +262,13 @@ void DIO_read(uint8_t pin_num, EN_port_name port_name, EN_pin_value* value)
 				break;
 			}
 		case D:
-			if (((PIND_REG & (1 << pin_num)) >> pin_num))
+			if (((PIND & (1 << pin_num)) >> pin_num))
 			{
 				*value = ON_value;
 				break;
 			}
 
-			else if (!((PIND_REG & (1 << pin_num)) >> pin_num))
+			else if (!((PIND & (1 << pin_num)) >> pin_num))
 			{
 				*value = OFF_value;
 				break;
@@ -237,21 +285,40 @@ void DIO_read(uint8_t pin_num, EN_port_name port_name, EN_pin_value* value)
 
 void DIO_toggle(uint8_t pin_num, EN_port_name port_name)
 {
+	switch (port_name)
+	{
+		case A:
+			PORTA ^= (1<<pin_num);
+			break;
+		
+		case B:
+			PORTB ^= (1<<pin_num);
+			break;
 
-	EN_pin_value temp_value;
-	DIO_read(pin_num, port_name, &temp_value);
+		case C:
+			PORTC ^= (1<<pin_num);
+			break;
 
-	if (temp_value == OFF_value)
-	{
-		DIO_write(pin_num, port_name, ON_value);
+		case D:
+			PORTD ^= (1<<pin_num);
+			break;				
 	}
-	else if (temp_value == ON_value)
-	{
-		DIO_write(pin_num, port_name, OFF_value);
-	}
-	else
-	{
-		//Error handle
-	}
+	//EN_pin_value temp_value;
+	//DIO_read(pin_num, port_name, &temp_value);
+//
+	//if (temp_value == OFF_value)
+	//{
+		//DIO_write(pin_num, port_name, ON_value);
+	//}
+	//else if (temp_value == ON_value)
+	//{
+		//DIO_write(pin_num, port_name, OFF_value);
+	//}
+	//else
+	//{
+		////Error handle
+	//}
 
 }
+
+

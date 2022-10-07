@@ -6,17 +6,72 @@
 #include "Timers.h"
 
 static const ST_delay clear_delay = {0,0,0,0}; // used to clear delay structure before each initialization
-volatile ST_delay delay_0;
 
 
-void timer_init(EN_timer_num timer_num, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit)
+
+void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit)
 {
-	delay_0 = clear_delay ;
-	
+	//terminate if delay is 0 
 	if (delay_value <=0)
 	{
 		return;
-	}	
+	}
+	
+	// interrupt enable or not 
+	switch (timer_interrupt_init)
+	{
+		case interrupt_enable:
+			switch (timer_num)
+			{	
+				case timer_0:
+					TIMSK |= (1<<TOIE0);
+					break;
+
+				case timer_1:
+					TIMSK |= (1<<TOIE1);
+					break;
+										
+				case timer_2:
+					TIMSK |= (1<<TOIE2);
+					break;				
+			}
+			break;
+				
+		case interrupt_disable:
+			switch (timer_num)
+			{
+				case timer_0:
+					TIMSK &=~ (1<<TOIE0);
+					break;
+
+				case timer_1:
+					TIMSK &=~ (1<<TOIE1);
+					break;
+										
+				case timer_2:
+					TIMSK &=~ (1<<TOIE2);
+					break;
+			}
+			break;
+			
+	}
+	
+	// reset delay structure according to the timer being initialized 
+		switch(timer_num)
+	{	
+		case timer_0:	
+			delay_0 = clear_delay ;
+			break;
+		
+		case timer_1:
+			delay_1 = clear_delay ;
+			break;
+		
+		case timer_2:
+			delay_2 = clear_delay ;
+			break;
+	}
+	
 	/* defining timer calculations variables*/
 	uint16_t prescaler_value =1;
 	double timer_size =256;
@@ -46,7 +101,7 @@ void timer_init(EN_timer_num timer_num, EN_timer_prescaler prescaler, double del
 		}
 	}
 	
-	/* converting delay units to micro-seconds */
+	/* converting delay units to micro-seconds as calcualtions are held in micro-seconds */
 	switch (delay_unit)
 	{
 		case seconds:
@@ -60,7 +115,7 @@ void timer_init(EN_timer_num timer_num, EN_timer_prescaler prescaler, double del
 			delay_value = delay_value * 1000;
 			break;
 		}
-		case micros:
+		default:
 		{
 			//do nothing, they are already in micro-seconds :D 
 			break;
@@ -109,11 +164,21 @@ void timer_init(EN_timer_num timer_num, EN_timer_prescaler prescaler, double del
 			prescaler_value = 8;
 			break;
 		}
+		case pre_32:
+		{
+			prescaler_value = 32;
+			break;
+		}		
 		case pre_64:
 		{
 			prescaler_value = 64;
 			break;
-		}	
+		}
+		case pre_128:
+		{
+			prescaler_value = 128;
+			break;
+		}		
 		case pre_256:
 		{
 			prescaler_value = 256;
@@ -162,9 +227,9 @@ void timer_init(EN_timer_num timer_num, EN_timer_prescaler prescaler, double del
 		}
 		case timer_2:
 		{
-			//delay_2.init_value = timer_init_value;
-			//delay_2.n_overflow = n_overflow;
-			//delay_2.prescaler_value = prescaler_value;
+			delay_2.init_value = timer_init_value;
+			delay_2.n_overflow = n_overflow;
+			delay_2.prescaler_value = prescaler_value;
 			break;
 		}		
 	}
@@ -183,7 +248,7 @@ void blocking_delay_0()
 		}
 		case 8:
 		{
-			TCCR0|= (1<<CS01);;
+			TCCR0|= (1<<CS01);
 			break;
 		}
 		case 64:
@@ -210,16 +275,67 @@ void blocking_delay_0()
 	
 	do
 	{
-		while((TIFR&0x01)==0);
+		while((TIFR&0x01)==0 && stop_timer_0_flag == 0);
 		TIFR = 0x1;
 		delay_0.n_overflow_flag++;
 	}
-	while (delay_0.n_overflow_flag < (delay_0.n_overflow) );
-
+	while (delay_0.n_overflow_flag < (delay_0.n_overflow) && stop_timer_0_flag == 0);
+	stop_timer_0_flag = 0;
+		
 	TCCR0 = 0x00;
 	delay_0.n_overflow_flag = 0;
 	
 }
+
+void non_blocking_delay_2(EN_non_blocking_delay_status status)
+{
+	if (status == start)
+	{
+		TCNT2 = delay_2.init_value; // set time initial value
+		switch (delay_2.prescaler_value)
+		{
+			case 1:
+				TCCR2|= (1<<CS20);
+				break;
+		
+			case 8:
+				TCCR2|= (1<<CS21);
+				break;
+		
+			case 32:
+				TCCR2|= (1<<CS20) | (1<<CS21);
+				break;
+		
+			case 64:
+				TCCR2|= (1<<CS22) ;
+				break;
+		
+			case 128:
+				TCCR2|= (1<<CS20) | (1<<CS22) ;
+				break;	
+		
+			case 256:
+				TCCR2|= (1<<CS21) | (1<<CS22);
+				break;
+		
+			case 1024:
+				TCCR2|= (1<<CS20) | (1<<CS21) |(1<<CS22) ;
+				break;
+		
+			default:
+				TCCR2|= (1<<CS20);//set default to 1 prescaler
+				break;
+		}
+	}
+	else if (status == stop)
+	{
+		
+		TCCR2 = 0x00 ;
+	}
+
+	//stop_timer_2_flag = 0;
+}
+
 
 /*
 void timer_calculations_compensation()

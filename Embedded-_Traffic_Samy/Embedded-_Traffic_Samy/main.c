@@ -5,16 +5,13 @@
  * Date : OCT 2022
  
  */ 
-
-
-
+#include "Application/app.h"
 
 int main(void)
 {
-    /* Replace with your application code */
-    while (1) 
-    {
-    }
-return 0;
+app_init();
+app_start();
+
 }
+
 
