@@ -12,7 +12,7 @@
 
 extern ST_delay delay_0;
 
-int Timer_Testing_0 (void)
+int main (void)
 {
 	DIO_init(TEST_DIO_PIN,TEST_DIO_PORT,OUT_pin);
 	DIO_write(TEST_DIO_PIN,TEST_DIO_PORT,OFF_value);

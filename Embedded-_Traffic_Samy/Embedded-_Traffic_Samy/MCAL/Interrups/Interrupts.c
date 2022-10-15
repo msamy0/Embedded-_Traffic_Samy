@@ -6,13 +6,14 @@
 #include "Interrupts.h"
 
 
-void global_interrupt_init()
+INTERRUP_error_handler global_interrupt_init()
 {
 	// function from avr/intterupt.h library that sets the global interrupt enabled
 	sei();
+	return INTERRUP_OK;
 }
 
-void external_interrupt_sense_mode(uint8_t interrupt_num,  INT_sense_mode mode)
+INTERRUP_error_handler external_interrupt_sense_mode(uint8_t interrupt_num,  INT_sense_mode mode)
 {
 	switch (interrupt_num)
 	{
@@ -48,7 +49,7 @@ void external_interrupt_sense_mode(uint8_t interrupt_num,  INT_sense_mode mode)
 			else
 			{
 				//error handling
-				break;
+				return INTERRUP_ERROR;
 			}
 			
 		/***********************************************/
@@ -81,7 +82,7 @@ void external_interrupt_sense_mode(uint8_t interrupt_num,  INT_sense_mode mode)
 			else
 			{
 				//error handling
-				break;
+				return INTERRUP_ERROR;
 			}
 		
 		/***********************************************/
@@ -109,13 +110,13 @@ void external_interrupt_sense_mode(uint8_t interrupt_num,  INT_sense_mode mode)
 			else
 			{
 				//error handling
-				break;
+				return INTERRUP_ERROR;
 			}
 	}
+	return INTERRUP_OK; 
 }
 
-
-void external_interrupt_init(uint8_t interrupt_num)
+INTERRUP_error_handler external_interrupt_init(uint8_t interrupt_num)
 {
 	switch (interrupt_num)
 	{
@@ -133,7 +134,11 @@ void external_interrupt_init(uint8_t interrupt_num)
 		{
 			GICR |= (1<<INT2);//setting bit-5 in GICR register HIGH to enable interrupt 2
 			break;
-		}	
+		}
+		default:
+		return INTERRUP_ERROR;
 	}
+	
+	return INTERRUP_OK;
 }
 

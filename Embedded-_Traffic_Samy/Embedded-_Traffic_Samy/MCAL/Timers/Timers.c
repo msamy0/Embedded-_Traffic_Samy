@@ -9,12 +9,13 @@ static const ST_delay clear_delay = {0,0,0,0}; // used to clear delay structure 
 
 
 
-void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit)
+TIMER_error_handler timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit)
 {
 	//terminate if delay is 0 
 	if (delay_value <=0)
 	{
-		return;
+		
+		return TIMER_ERROR;
 	}
 	
 	// interrupt enable or not 
@@ -33,7 +34,9 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 										
 				case timer_2:
 					TIMSK |= (1<<TOIE2);
-					break;				
+					break;		
+				default:
+					return TIMER_ERROR;		
 			}
 			break;
 				
@@ -51,6 +54,8 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 				case timer_2:
 					TIMSK &=~ (1<<TOIE2);
 					break;
+				default: 
+					return TIMER_ERROR;
 			}
 			break;
 			
@@ -70,6 +75,9 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 		case timer_2:
 			delay_2 = clear_delay ;
 			break;
+			
+		default:
+			return TIMER_ERROR;
 	}
 	
 	/* defining timer calculations variables*/
@@ -99,28 +107,28 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 			timer_size =256;
 			break;
 		}
+		
+		default:
+			return TIMER_ERROR;
 	}
 	
 	/* converting delay units to micro-seconds as calcualtions are held in micro-seconds */
 	switch (delay_unit)
 	{
 		case seconds:
-		{
 			delay_value = delay_value*1000000;
 			break;
-		}
 
 		case millis:
-		{
 			delay_value = delay_value * 1000;
 			break;
-		}
-		default:
-		{
+
+		case micros:
 			//do nothing, they are already in micro-seconds :D 
 			break;
-		}
-
+			
+		default:
+			return TIMER_ERROR;	
 	}
 	
 	/* setting prescaler depending on the user choice, if automatic, then the could will evaluate it depending on the delay value*/
@@ -188,7 +196,9 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 		{
 			prescaler_value = 1024;
 			break;
-		}	
+		}
+		default:
+			return TIMER_ERROR;
 	}
 
 
@@ -212,31 +222,30 @@ void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, 
 	switch (timer_num)
 	{
 		case timer_0:
-		{
 			delay_0.init_value = timer_init_value;
 			delay_0.n_overflow = n_overflow;
 			delay_0.prescaler_value = prescaler_value;
 			break;
-		}
+		
 		case timer_1:
-		{
 			//delay_1.init_value = timer_init_value;
 			//delay_1.n_overflow = n_overflow;
 			//delay_1.prescaler_value = prescaler_value;
 			break;
-		}
+		
 		case timer_2:
-		{
 			delay_2.init_value = timer_init_value;
 			delay_2.n_overflow = n_overflow;
 			delay_2.prescaler_value = prescaler_value;
-			break;
-		}		
+			break;		
+		
+		default:
+			return TIMER_ERROR;
 	}
-
+return TIMER_OK;
 }
 
-void blocking_delay_0()
+TIMER_error_handler blocking_delay_0()
 {
 	TCNT0 = delay_0.init_value; // set time initial value
 	switch (delay_0.prescaler_value)
@@ -268,8 +277,7 @@ void blocking_delay_0()
 		}
 		default:
 		{
-			TCCR0|= (1<<CS00);
-			break;	
+			return TIMER_ERROR;
 		}								
 	}
 	
@@ -284,10 +292,10 @@ void blocking_delay_0()
 		
 	TCCR0 = 0x00;
 	delay_0.n_overflow_flag = 0;
-	
+	return TIMER_OK;
 }
 
-void non_blocking_delay_2(EN_non_blocking_delay_status status)
+TIMER_error_handler non_blocking_delay_2(EN_non_blocking_delay_status status)
 {
 	if (status == start)
 	{
@@ -323,8 +331,7 @@ void non_blocking_delay_2(EN_non_blocking_delay_status status)
 				break;
 		
 			default:
-				TCCR2|= (1<<CS20);//set default to 1 prescaler
-				break;
+				return TIMER_ERROR;
 		}
 	}
 	else if (status == stop)
@@ -333,32 +340,6 @@ void non_blocking_delay_2(EN_non_blocking_delay_status status)
 		TCCR2 = 0x00 ;
 	}
 
-	//stop_timer_2_flag = 0;
+	return TIMER_OK;
 }
 
-
-/*
-void timer_calculations_compensation()
-{
-//run timer to calculate delay initialization and math calculation execution period
-//to subtract it later to the delay value.
-TCNT0 = 0x00;	// Timer0 - initial value 0
-TCCR0 = 0x02;	// Timer0 - normal mode - prescaler 8
-volatile uint8_t  excution_stopwatch=0; // store the TCNT0 spent period before delay actually starts
-volatile uint16_t excution_micros=0;	// value to be subtracted from delay_value						
-//get value of stopwatch running from the beginning of the function execution
-if( (TIFR & 0x01) == 1)
-{
-	TIFR = 0x01;
-	excution_stopwatch = TCNT0;
-	excution_micros = (256 + excution_stopwatch) * 8;
-}
-
-else
-{
-	excution_stopwatch = TCNT0;
-	excution_micros = excution_stopwatch * 8;
-}
-TCCR0 = 0x00;
-}
-*/

@@ -9,6 +9,10 @@
 
 
 
+typedef enum TIMER_error_handler {TIMER_OK,TIMER_ERROR} TIMER_error_handler;
+
+
+
 /*enums used to define the timer used and its configurations*/
 typedef enum EN_timer_num{timer_0,timer_1,timer_2}EN_timer_num;
 typedef enum EN_timer_mode{normal,CTC,PWM_phase_correct,fast_PWM}EN_timer_mode;
@@ -38,10 +42,10 @@ volatile ST_delay delay_2;
 /*initialization timer*/
 
 
-void timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit);
+TIMER_error_handler timer_init(EN_timer_num timer_num,EN_timer_interrupt timer_interrupt_init, EN_timer_prescaler prescaler, double delay_value, EN_delay_unit delay_unit);
 
-void blocking_delay_0();
-void non_blocking_delay_2(EN_non_blocking_delay_status status);
+TIMER_error_handler blocking_delay_0();
+TIMER_error_handler non_blocking_delay_2(EN_non_blocking_delay_status status);
 
 
 #endif

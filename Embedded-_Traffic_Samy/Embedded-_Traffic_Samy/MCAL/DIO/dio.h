@@ -12,16 +12,18 @@ typedef enum EN_pin_direction {IN_pin,OUT_pin} EN_pin_direction;
 	
 typedef enum EN_pin_value {OFF_value,ON_value} EN_pin_value;
 
+typedef enum DIO_error_handler {DIO_OK,PIN_NUM_ERROR,PORT_NAME_ERROR,VALUE_ERROR} DIO_error_handler;
 
-void DIO_init(uint8_t pinNum, EN_port_name port_name, EN_pin_direction direction);
 
-void DIO_write(uint8_t pinNum, EN_port_name port_name, EN_pin_value value);
+DIO_error_handler DIO_init(uint8_t pinNum, EN_port_name port_name, EN_pin_direction direction);
 
-void DIO_write_port(EN_port_name port_name, EN_pin_value value);
+DIO_error_handler DIO_write(uint8_t pinNum, EN_port_name port_name, EN_pin_value value);
 
-void DIO_read(uint8_t pinNum, EN_port_name port_name,  EN_pin_value *value);
+DIO_error_handler DIO_write_port(EN_port_name port_name, EN_pin_value value);
 
-void DIO_toggle(uint8_t pinNum, EN_port_name port_name);
+DIO_error_handler DIO_read(uint8_t pinNum, EN_port_name port_name,  EN_pin_value *value);
+
+DIO_error_handler DIO_toggle(uint8_t pinNum, EN_port_name port_name);
 
 
 #endif

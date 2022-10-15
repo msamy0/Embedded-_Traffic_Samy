@@ -7,7 +7,7 @@ External interrupt module test
 
 uint8_t flag = 0;
 
-int Interrupt_Testing_Module(void)
+int main(void)
 {
 
     global_interrupt_init();
